@@ -1,0 +1,26 @@
+version: '3.4'
+
+services:
+  apiclimate:
+    image: ${DOCKER_REGISTRY-}apiclimate
+    build:
+      context: .
+      dockerfile: ApiClimate/Dockerfile
+    ports:
+     - "80:80"
+     - "443:443"
+    depends_on: 
+     - sqldata
+    environment:
+     - ASPNETCORE_ENVIRONMENT=Development
+     - ASPNETCORE_URLS=http://:80/;https://.443
+
+  sqldata:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+        - SA_PASSWORD=123@Mudar
+        - ACCEPT_EULA=Y
+    volumes:
+        - C:\Dados:/var/opt/mssql/data
+    ports:
+        - "1450:1433" 

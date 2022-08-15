@@ -1,0 +1,150 @@
+--Cria o Banco de Dados
+Create Database ClimateDB
+
+Go
+
+-- Criação das tabelas
+Create Table UserAplication
+(
+	Id int NOT NULL IDENTITY(1,1) Primary Key,
+	Login varchar(50) NOT NULL,
+	Password varchar(100) NOT NULL,
+	Created_at datetime not null,
+	Updated_at datetime,
+	Deleted_at datetime
+)
+
+Create Table TokenAplicacao
+(
+ Id int NOT NULL IDENTITY(1,1) Primary Key,
+ Token nvarchar(MAX) NOT NULL,
+ Created_at datetime not null,
+ Updated_at datetime, 
+ Expired_at datetime not null,
+ Id_UserAplication int null,
+ Active bit default 0 not null
+)
+
+ALTER TABLE TokenAplicacao  WITH CHECK ADD  CONSTRAINT [FK_TokenAplicacao_UserAplication] FOREIGN KEY([Id_UserAplication])
+REFERENCES UserAplication (Id)
+
+
+-- Tables de Location
+Create Table UF
+(
+ Id int NOT NULL IDENTITY(1,1) Primary Key,
+ Sigla varchar(2) NOT NULL,
+ Created_at datetime not null,
+ Updated_at datetime, 
+ Deleted_at datetime
+)
+
+Create Table Region
+(
+ Id int NOT NULL IDENTITY(1,1) Primary Key,
+ Nome varchar(10) NOT NULL,
+ Created_at datetime not null,
+ Updated_at datetime, 
+ Deleted_at datetime
+)
+
+Create Table City
+(
+ Id int NOT NULL IDENTITY(1,1) Primary Key,
+ Nome varchar(40) NOT NULL,
+ Id_UF int NOT NULL,
+ Id_Region int NOT NULL,
+ Created_at datetime not null,
+ Updated_at datetime, 
+ Deleted_at datetime
+)
+
+ALTER TABLE City  WITH CHECK ADD  CONSTRAINT [FK_City_UF] FOREIGN KEY([Id_UF])
+REFERENCES UF (Id)
+
+ALTER TABLE City  WITH CHECK ADD  CONSTRAINT [FK_City_Region] FOREIGN KEY([Id_Region])
+REFERENCES Region (Id)
+
+--Tables de Clima
+Create Table ConditionClimate
+(
+	Id int NOT NULL IDENTITY(1,1) Primary Key,
+	Condition varchar(20) NOT NULL,	
+	Created_at datetime not null,
+	Updated_at datetime,
+	Deleted_at datetime
+)
+
+Create Table LocationClimate(
+ Id int NOT NULL IDENTITY(1,1) Primary Key,
+ Id_UF int NOT NULL,
+ Id_Region int NOT NULL,
+ Id_City int NOT NULL,
+ Id_ConditionClimate int NOT NULL,
+ Verification_Date Datetime NOT NULL,
+ Verification_Min decimal(4,2) NOT NULL,
+ Verification_Max decimal(4,2) NOT NULL,
+ Climate_Now decimal(4,2) NOT NULL
+)
+
+ALTER TABLE LocationClimate  WITH CHECK ADD  CONSTRAINT [FK_LocationClimate_UF] FOREIGN KEY([Id_UF])
+REFERENCES UF (Id)
+ALTER TABLE LocationClimate  WITH CHECK ADD  CONSTRAINT [FK_LocationClimate_Region] FOREIGN KEY([Id_Region])
+REFERENCES Region (Id)
+ALTER TABLE LocationClimate  WITH CHECK ADD  CONSTRAINT [FK_LocationClimate_City] FOREIGN KEY([Id_City])
+REFERENCES City (Id)
+ALTER TABLE LocationClimate  WITH CHECK ADD  CONSTRAINT [FK_LocationClimate_ConditionClimate] FOREIGN KEY([Id_ConditionClimate])
+REFERENCES ConditionClimate (Id)
+
+-- Inserts 
+INSERT INTO UserAplication values ('ClimateUser','123@Mudar', GETDATE(),null,null)
+  insert into Region Values ('SUL', GETDATE(), null,null)
+  
+  insert into Region Values ('NORTE', GETDATE(), null,null)
+  
+  insert into Region Values ('NORDESTES', GETDATE(), null,null)
+  
+  insert into Region Values ('CENTROESTE', GETDATE(), null,null)
+  
+  insert into Region Values ('SULDESTE', GETDATE(), null,null)
+  
+  
+  insert into UF Values ('SP', GETDATE(), null,null)
+  
+  insert into UF Values ('RJ', GETDATE(), null,null)
+  
+  insert into UF Values ('SC', GETDATE(), null,null)
+  
+     insert into ConditionClimate Values ('Nublado', GETDATE(), null,null)
+	    insert into ConditionClimate Values ('Aberto', GETDATE(), null,null)
+		    insert into ConditionClimate Values ('Abafado', GETDATE(), null,null)
+			    insert into ConditionClimate Values ('Chuvoso', GETDATE(), null,null)
+				  insert into City Values ('SAO PAULO', 1, 5, GETDATE(), null,null)
+    insert into City Values ('Campinas', 1, 5, GETDATE(), null,null)
+	  insert into City Values ('Curitiba', 3, 5, GETDATE(), null,null)
+	   insert into City Values ('Florianopolis', 3, 5, GETDATE(), null,null)
+	    insert into City Values ('Rio de Janeiro', 2, 5, GETDATE(), null,null)
+		
+		 insert into LocationClimate Values (1,5,1,2,GETDATE(),25.0,25.0,23.0)
+		  insert into LocationClimate Values (1,5,1,2,GETDATE()+1,25.0,25.0,23.0)
+   insert into LocationClimate Values (1,5,1,2,GETDATE()+2,24.0,25.0,23.0)
+    insert into LocationClimate Values (1,5,1,2,GETDATE()+3,23.0,25.0,23.0)
+	 insert into LocationClimate Values (1,5,1,2,GETDATE()+4,28.0,25.0,23.0)
+	  insert into LocationClimate Values (1,5,1,2,GETDATE()+5,29.0,25.0,23.0)
+	   insert into LocationClimate Values (3,5,4,2,GETDATE(),25.0,25.0,18.0)
+		  insert into LocationClimate Values (3,5,4,2,GETDATE()+1,25.0,25.0,16.0)
+   insert into LocationClimate Values (3,5,4,2,GETDATE()+2,24.0,25.0,13.0)
+    insert into LocationClimate Values (3,5,4,2,GETDATE()+3,23.0,25.0,14.0)
+	 insert into LocationClimate Values (3,5,4,2,GETDATE()+4,28.0,25.0,15.0)
+	  insert into LocationClimate Values (3,5,4,2,GETDATE()+5,29.0,25.0,23.0)
+	  	 insert into LocationClimate Values (2,5,1,2,GETDATE(),25.0,25.0,23.0)
+		  insert into LocationClimate Values (2,5,1,2,GETDATE()+1,25.0,25.0,23.0)
+   insert into LocationClimate Values (2,5,1,2,GETDATE()+2,24.0,25.0,23.0)
+    insert into LocationClimate Values (2,5,1,2,GETDATE()+3,23.0,25.0,23.0)
+	 insert into LocationClimate Values (2,5,1,2,GETDATE()+4,28.0,25.0,23.0)
+	  insert into LocationClimate Values (2,5,1,2,GETDATE()+5,29.0,25.0,23.0)
+	  
+	   update [LocationClimate] set Id_City = 5, Climate_Now = 40.0 where Id_UF = 2
+	   
+  
+  
